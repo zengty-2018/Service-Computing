@@ -208,13 +208,14 @@ func Watch(file_name string, Listen Listener) (map[string]string, error_mes) {
 	Print_config(config)
 	Listen.listen(file_name)
 	fmt.Println("The file have been changed.")
+	fmt.Println("")
 
 	config, err = Read_file(file_name)
 	if len(err.mes) != 0 {
 		fmt.Println(err.mes)
 		return config, err
 	}
-	Print_config(config)
+	//Print_config(config)
 
 	return config, err
 }
