@@ -13,7 +13,7 @@ func TestReadFile(t *testing.T) {
 	filename := "example.ini"
 	receive, _ := Read_file(filename)
 
-	Print_config(receive)
+	//Print_config(receive)
 
 	expect := map[string]string{
 		"app_mode": "development",
