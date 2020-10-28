@@ -1,0 +1,15 @@
+define({
+  "name": "package myjson",
+  "version": "0.0.0",
+  "description": "Marshal：支持将各种数据类型转为json",
+  "title": "Marshal API",
+  "sampleUrl": false,
+  "defaultVersion": "0.0.0",
+  "apidoc": "0.3.0",
+  "generator": {
+    "name": "apidoc",
+    "time": "2020-10-28T02:23:04.529Z",
+    "url": "https://apidocjs.com",
+    "version": "0.25.0"
+  }
+});
