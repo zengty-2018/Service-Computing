@@ -73,7 +73,7 @@ func (filop filOperator) op(ctx context.Context, o *Observable) {
 		}
 
 		if o.flip != nil {
-			buffer, _ := o.flip.([]interface{}) //通过断言实现类型转换
+			buffer, _ := o.flip.([]interface{})
 			for _, v := range buffer {
 				o.sendToFlow(ctx, v, out)
 			}
@@ -108,23 +108,22 @@ func (parent *Observable) Debounce(timeSpan time.Duration) (o *Observable) {
 	return o
 }
 
-var debounceOperator = filOperator{
-	opFunc: func(ctx context.Context, o *Observable, item reflect.Value, out chan interface{}) (end bool) {
-		o.times++
-		go func() {
-			temp := o.times
-			time.Sleep(o.time_span)
-			select {
-			case <-ctx.Done():
-				return
-			default:
-				if temp == o.times && !end {
-					end = o.sendToFlow(ctx, item.Interface(), out)
-				}
+var debounceOperator = filOperator{opFunc: func(ctx context.Context, o *Observable, item reflect.Value, out chan interface{}) (end bool) {
+	o.times++
+	go func() {
+		temp := o.times
+		time.Sleep(o.time_span)
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			if temp == o.times {
+				o.sendToFlow(ctx, item.Interface(), out)
 			}
-		}()
-		return false
-	},
+		}
+	}()
+	return false
+},
 }
 
 func (parent *Observable) Distinct() (o *Observable) {
@@ -145,7 +144,7 @@ var distinctOperator = filOperator{opFunc: func(ctx context.Context, o *Observab
 	o.item_map[str] = true
 	o.sendToFlow(ctx, item.Interface(), out)
 
-	return
+	return false
 },
 }
 
@@ -162,7 +161,7 @@ var elementAtOperator = filOperator{opFunc: func(ctx context.Context, o *Observa
 		end = o.sendToFlow(ctx, item.Interface(), out)
 	}
 	o.times++
-	return
+	return false
 },
 }
 
@@ -179,7 +178,7 @@ var firstOperator = filOperator{opFunc: func(ctx context.Context, o *Observable,
 	}
 	o.times++
 
-	return
+	return true
 },
 }
 
@@ -190,7 +189,7 @@ func (parent *Observable) IgnoreElements() (o *Observable) {
 }
 
 var ignoreElementsOperator = filOperator{opFunc: func(ctx context.Context, o *Observable, item reflect.Value, out chan interface{}) (end bool) {
-	return
+	return false
 },
 }
 
@@ -204,7 +203,7 @@ func (parent *Observable) Last() (o *Observable) {
 var lastOperator = filOperator{func(ctx context.Context, o *Observable, x reflect.Value, out chan interface{}) (end bool) {
 	var slice []interface{}
 	o.flip = append(slice, x.Interface())
-	return
+	return false
 },
 }
 
@@ -219,7 +218,7 @@ func (parent *Observable) Sample(timespan time.Duration) (o *Observable) {
 var sampleOperator = filOperator{func(ctx context.Context, o *Observable, x reflect.Value, out chan interface{}) (end bool) {
 	var slice []interface{}
 	o.flip = append(slice, x.Interface())
-	return
+	return false
 },
 }
 
@@ -238,7 +237,7 @@ var skipOperator = filOperator{func(ctx context.Context, o *Observable, item ref
 	} else {
 		o.sendToFlow(ctx, item.Interface(), out)
 	}
-	return
+	return false
 },
 }
 
@@ -258,7 +257,7 @@ var skipLastOperator = filOperator{func(ctx context.Context, o *Observable, item
 	if o.times > o.skip_last_num {
 		o.sendToFlow(ctx, o.last[0], out)
 		o.last = o.last[1:]
-		fmt.Println(o.last)
+		//fmt.Println(o.last)
 	}
 
 	return false
