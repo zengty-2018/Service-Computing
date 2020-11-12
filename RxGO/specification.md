@@ -233,7 +233,7 @@ func TestDistinct(t *testing.T) {
 #### (3) ElementAt
 ![elementAt](img/elementAt.jpg)  
 ElementAt：发送第n个到达的数据。  
-设计思路：利用计数器o.times，当每发送一个数据就+1，当与所设定的n相等时就发送。
+实现思路：利用计数器o.times，当每发送一个数据就+1，当与所设定的n相等时就发送。
 ```
 func (parent *Observable) ElementAt(pos int) (o *Observable) {
 	o = parent.newFilterObservable("elementAt")
@@ -268,7 +268,7 @@ func TestElementAt(t *testing.T) {
 
 #### (4)First
 ![first](img/first.jpg)  
-First：发送第一个到达的数据。
+First：发送第一个到达的数据。  
 实现思路：也是利用计数器o.times，发送第一个即可。
 ```
 func (parent *Observable) First() (o *Observable) {
@@ -304,8 +304,8 @@ func TestFirst(t *testing.T) {
 
 #### (5) IgnoreElements
 ![ignoreElement](img/ignoreElement.jpg)  
-IgnoreElements：直接拒绝所有数据。
-设计思路：这个最简单，直接返回即可。
+IgnoreElements：直接拒绝所有数据。  
+实现思路：这个最简单，直接返回即可。
 ```
 func (parent *Observable) IgnoreElements() (o *Observable) {
 	o = parent.newFilterObservable("ignoreElements")
@@ -334,7 +334,7 @@ func TestIgnoreElements(t *testing.T) {
 
 #### (6)Last
 ![last](img/last.jpg)  
-Last：发射最后一个到达的数据。
+Last：发射最后一个到达的数据。  
 实现思路：在监听数据的时候把数据缓存起来，到最后利用op中添加的部分发送。
 ```
 func (parent *Observable) Last() (o *Observable) {
@@ -376,7 +376,7 @@ func TestLast(t *testing.T) {
 
 #### (7) Sample
 ![sample](img/sample.jpg)  
-Sample：定时查看Observable，将距离上次采样最近的数据发射。
+Sample：定时查看Observable，将距离上次采样最近的数据发射。  
 实现思路： 缓存最新到达的数据，开启调度器，然后在op中新开一个go线程，如果调度器是开启状态，则将缓存中的数据发射并清空缓存。
 ```
 func (parent *Observable) Sample(timespan time.Duration) (o *Observable) {
@@ -447,7 +447,7 @@ func TestSample(t *testing.T) {
 
 #### (8) Skip
 ![skip](img/skip.jpg)  
-Skip：跳过前n项数据，只发射后面到达的数据。
+Skip：跳过前n项数据，只发射后面到达的数据。  
 实现思路：利用o.times计数，只有到了n之后才开始发射数据。
 ```
 func (parent *Observable) Skip(num int) (o *Observable) {
@@ -485,7 +485,7 @@ func TestSkip(t *testing.T) {
 
 #### (9)SkipLast
 ![skipLast](img/skipLast.jpg)  
-SkipLast：跳过后n项数据，只发射前面到达的数据。
+SkipLast：跳过后n项数据，只发射前面到达的数据。  
 实现思路：将到达的数据存起来，当存储数据的个数超过要跳过的个数时，当下一个数据到达的时候就发出存储的第一个数据（此时已经保证了第一个数据不会是最后n个）
 ```
 func (parent *Observable) SkipLast(num int) (o *Observable) {
@@ -527,7 +527,7 @@ func TestSkipLast(t *testing.T) {
 
 #### (10)Take
 ![take](img/take.jpg)  
-Take：取前几个元素发射。
+Take：取前几个元素发射。  
 实现思路：利用计数器o.times，当o.times小于n时就发射，否则直接跳过。
 ```
 func (parent *Observable) Take(num int) (o *Observable) {
@@ -567,7 +567,7 @@ func TestTake(t *testing.T) {
 
 #### (11)TakeLast
 ![takeLast](img/takeLast.jpg)  
-TakeLast：选取后n个数据，丢弃前面的。
+TakeLast：选取后n个数据，丢弃前面的。  
 实现思路：和前面的last实现类似，缓存后n个数据，在执行结束之后再通过op发射。
 ```
 func (parent *Observable) TakeLast(num int) (o *Observable) {
