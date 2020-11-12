@@ -1,13 +1,13 @@
 # RxGo——filtering设计说明
 ## 实现的操作
 根据[reactivex.io](http://reactivex.io/documentation/operators.html#filtering)中关于filter的介绍，我们要实现的操作如下：
-![pic2](img/2.jpg)
+![pic2](img/2.jpg)  
 
 ## 具体设计
 ### 1.准备工作
 #### (1) 定义filOperator
 根据transforms.go中transOperator的定义：
-![pic3](img/3.jpg)
+![pic3](img/3.jpg)  
 模仿定义如下：
 ```
 type filOperator struct {
@@ -128,7 +128,7 @@ var xOperator=filOperator{
 }
 ```
 #### (1) Debounce
-![debounce](img/debounce.jpg)
+![debounce](img/debounce.jpg)  
 Debounce：在释放item后，如果在一段时间内不再释放任何到达的item，在这段时间之后再次弹出一个item。    
 实现思路：利用一个o.times计数，每次触发都会+1，在然后让进程睡眠一个规定的time_span，如果o.times改变了则说明有新的数据到达了，如果没有则将这个数据发送出去。    
 ```
@@ -190,7 +190,7 @@ func TestDebounce(t *testing.T) {
 ![debounceTest](img/debounceTest.jpg)
 <BR>
 #### (2)Distinct
-![distinct](img/distinct.jpg)
+![distinct](img/distinct.jpg)  
 Distinct：过滤掉与前面已发送的数据重复的项。  
 实现思路：利用一个item_map数组储存该数据是否已经出现过，等下次同样的数据到达的时候就直接拒绝即可。
 ```
@@ -231,7 +231,7 @@ func TestDistinct(t *testing.T) {
 ![distincTest](img/distinctTest.jpg)
 
 #### (3) ElementAt
-![elementAt](img/elementAt.jpg)
+![elementAt](img/elementAt.jpg)  
 ElementAt：发送第n个到达的数据。  
 设计思路：利用计数器o.times，当每发送一个数据就+1，当与所设定的n相等时就发送。
 ```
@@ -267,7 +267,7 @@ func TestElementAt(t *testing.T) {
 ![elementAtTest](img/elementAtTest.jpg)
 
 #### (4)First
-![first](img/first.jpg)
+![first](img/first.jpg)  
 First：发送第一个到达的数据。
 实现思路：也是利用计数器o.times，发送第一个即可。
 ```
@@ -303,7 +303,7 @@ func TestFirst(t *testing.T) {
 ![first](img/firstTest.jpg)
 
 #### (5) IgnoreElements
-![ignoreElement](img/ignoreElement.jpg)
+![ignoreElement](img/ignoreElement.jpg)  
 IgnoreElements：直接拒绝所有数据。
 设计思路：这个最简单，直接返回即可。
 ```
@@ -333,7 +333,7 @@ func TestIgnoreElements(t *testing.T) {
 ![ignoreElementTest](img/ignoreElementTest.jpg)
 
 #### (6)Last
-![last](img/last.jpg)
+![last](img/last.jpg)  
 Last：发射最后一个到达的数据。
 实现思路：在监听数据的时候把数据缓存起来，到最后利用op中添加的部分发送。
 ```
@@ -375,7 +375,7 @@ func TestLast(t *testing.T) {
 ![lastTest](img/lastTest.jpg)
 
 #### (7) Sample
-![sample](img/sample.jpg)
+![sample](img/sample.jpg)  
 Sample：定时查看Observable，将距离上次采样最近的数据发射。
 实现思路： 缓存最新到达的数据，开启调度器，然后在op中新开一个go线程，如果调度器是开启状态，则将缓存中的数据发射并清空缓存。
 ```
@@ -446,7 +446,7 @@ func TestSample(t *testing.T) {
 ![sampleTest](img/sampleTest.jpg)
 
 #### (8) Skip
-![skip](img/skip.jpg)
+![skip](img/skip.jpg)  
 Skip：跳过前n项数据，只发射后面到达的数据。
 实现思路：利用o.times计数，只有到了n之后才开始发射数据。
 ```
@@ -484,7 +484,7 @@ func TestSkip(t *testing.T) {
 ![skipTest](img/skipTest.jpg)
 
 #### (9)SkipLast
-![skipLast](img/skipLast.jpg)
+![skipLast](img/skipLast.jpg)  
 SkipLast：跳过后n项数据，只发射前面到达的数据。
 实现思路：将到达的数据存起来，当存储数据的个数超过要跳过的个数时，当下一个数据到达的时候就发出存储的第一个数据（此时已经保证了第一个数据不会是最后n个）
 ```
@@ -526,7 +526,7 @@ func TestSkipLast(t *testing.T) {
 ![skipLastTest](img/skipLastTest.jpg)
 
 #### (10)Take
-![take](img/take.jpg)
+![take](img/take.jpg)  
 Take：取前几个元素发射。
 实现思路：利用计数器o.times，当o.times小于n时就发射，否则直接跳过。
 ```
@@ -566,7 +566,7 @@ func TestTake(t *testing.T) {
 ![takeTest](img/takeTest.jpg)
 
 #### (11)TakeLast
-![takeLast](img/takeLast.jpg)
+![takeLast](img/takeLast.jpg)  
 TakeLast：选取后n个数据，丢弃前面的。
 实现思路：和前面的last实现类似，缓存后n个数据，在执行结束之后再通过op发射。
 ```
