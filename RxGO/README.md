@@ -129,4 +129,4 @@ func main() {
 ![pic1](img\1.jpg)
 
 ## 设计说明
-详情查看[specification](specification.ms)
+详情查看[specification](https://gitee.com/zengty18342007/Service-Computing/blob/master/RxGO/specification.md)
